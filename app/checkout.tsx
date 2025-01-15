@@ -8,6 +8,8 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useCart } from "@/contexts/CartContext";
 import { useForm } from "react-hook-form";
@@ -91,145 +93,151 @@ export default function CheckoutScreen() {
   };
 
   const renderCartItem = ({ item }: { item: CartItem }) => (
-      <ProductRow item={item} />
+    <ProductRow item={item} />
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.heading}>Order Summary</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView style={styles.container}>
+          <Text style={styles.heading}>Order Summary</Text>
 
-        <FlatList
-          data={items}
-          keyExtractor={(item) => `${item.product.id}-${item.variation}`}
-          renderItem={renderCartItem}
-          ListEmptyComponent={
-            <View style={styles.emptyCart}>
-              <Text style={styles.emptyText}>Your cart is empty.</Text>
-              <TouchableOpacity
-                style={styles.continueButton}
-                onPress={() => router.push("/")}
-              >
-                <Text style={styles.buttonText}>Continue Shopping</Text>
-              </TouchableOpacity>
-            </View>
-          }
-          scrollEnabled={false} // Prevent nested scrolling
-        />
-
-        {items.length > 0 && !showCheckAnimation && (
-          <View style={styles.formContainer}>
-            <Text style={styles.subheading}>Shipping Information</Text>
-
-            <FormInput
-              label="Name"
-              name="name"
-              control={control}
-              rules={{
-                required: "Name is required",
-                minLength: {
-                  value: 2,
-                  message: "Name must be at least 2 characters long.",
-                },
-              }}
-              placeholder="John Doe"
-            />
-
-            <FormInput
-              label="Phone"
-              name="phone"
-              control={control}
-              rules={{
-                required: "Phone number is required",
-                pattern: {
-                  value: /^[0-9+\-()\s]{10,}$/,
-                  message: "Enter a valid phone number",
-                },
-              }}
-              placeholder="222-555-1234"
-              keyboardType="phone-pad"
-            />
-
-            <FormInput
-              label="Shipping Address"
-              name="shippingAddress"
-              control={control}
-              rules={{
-                required: "Shipping address is required",
-              }}
-              placeholder="123 Street, City, State"
-              multiline
-            />
-
-            <Text style={styles.subheading}>Payment Information</Text>
-
-            <FormInput
-              label="Credit Card"
-              name="creditCard"
-              control={control}
-              rules={{
-                required: "Credit card is required",
-                pattern: {
-                  value: /^\d{4}-?\d{4}-?\d{4}-?\d{4}$/,
-                  message: "Enter a valid 16-digit credit card number",
-                },
-              }}
-              placeholder="XXXX-XXXX-XXXX-XXXX"
-              keyboardType="numeric"
-            />
-
-            <View style={styles.totalContainer}>
-              <Text style={styles.totalLabel}>Total:</Text>
-              <Text style={styles.totalAmount}>
-                ${getTotalAmount().toFixed(2)}
-              </Text>
-            </View>
-
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  isSubmitting && styles.submitButtonDisabled,
-                ]}
-                onPress={handleSubmit(onSubmit)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <View style={styles.submitButtonContent}>
-                    <ActivityIndicator color="#fff" />
-                    <Text style={styles.buttonText}>Processing...</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.buttonText}>Place Order</Text>
-                )}
-              </TouchableOpacity>
-
-              <Link dismissTo href="/" asChild>
+          <FlatList
+            data={items}
+            keyExtractor={(item) => `${item.product.id}-${item.variation}`}
+            renderItem={renderCartItem}
+            ListEmptyComponent={
+              <View style={styles.emptyCart}>
+                <Text style={styles.emptyText}>Your cart is empty.</Text>
                 <TouchableOpacity
-                  style={styles.cancelButton}
+                  style={styles.continueButton}
+                  onPress={() => router.push("/")}
+                >
+                  <Text style={styles.buttonText}>Continue Shopping</Text>
+                </TouchableOpacity>
+              </View>
+            }
+            scrollEnabled={false} // Prevent nested scrolling
+          />
+
+          {items.length > 0 && !showCheckAnimation && (
+            <View style={styles.formContainer}>
+              <Text style={styles.subheading}>Shipping Information</Text>
+
+              <FormInput
+                label="Name"
+                name="name"
+                control={control}
+                rules={{
+                  required: "Name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters long.",
+                  },
+                }}
+                placeholder="John Doe"
+              />
+
+              <FormInput
+                label="Phone"
+                name="phone"
+                control={control}
+                rules={{
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^\+?[0-9]{1,4}?[-.\s]?(\(?\d{1,3}?\)?[-.\s]?){1,4}\d{1,4}$/,
+                    message: "Enter a valid phone number",
+                  },
+                }}
+                placeholder="222-555-1234"
+                keyboardType="phone-pad"
+              />
+
+              <FormInput
+                label="Shipping Address"
+                name="shippingAddress"
+                control={control}
+                rules={{
+                  required: "Shipping address is required",
+                }}
+                placeholder="123 Street, City, State"
+                multiline
+              />
+
+              <Text style={styles.subheading}>Payment Information</Text>
+
+              <FormInput
+                label="Credit Card"
+                name="creditCard"
+                control={control}
+                rules={{
+                  required: "Credit card is required",
+                  pattern: {
+                    value: /^\d{4}-?\d{4}-?\d{4}-?\d{4}$/,
+                    message: "Enter a valid 16-digit credit card number",
+                  },
+                }}
+                placeholder="XXXX-XXXX-XXXX-XXXX"
+                keyboardType="numeric"
+              />
+
+              <View style={styles.totalContainer}>
+                <Text style={styles.totalLabel}>Total:</Text>
+                <Text style={styles.totalAmount}>
+                  ${getTotalAmount().toFixed(2)}
+                </Text>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.submitButton,
+                    isSubmitting && styles.submitButtonDisabled,
+                  ]}
+                  onPress={handleSubmit(onSubmit)}
                   disabled={isSubmitting}
                 >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  {isSubmitting ? (
+                    <View style={styles.submitButtonContent}>
+                      <ActivityIndicator color="#fff" />
+                      <Text style={styles.buttonText}>Processing...</Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.buttonText}>Place Order</Text>
+                  )}
                 </TouchableOpacity>
-              </Link>
-            </View>
-          </View>
-        )}
 
-        {showCheckAnimation && (
-          <View style={styles.lottieContainer}>
-            <LottieView
-              source={checkMarkAnimation}
-              autoPlay
-              loop={false}
-              style={styles.lottieAnimation}
-            />
-          </View>
-        )}
-      </ScrollView>
+                <Link dismissTo href="/" asChild>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    disabled={isSubmitting}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </Link>
+              </View>
+            </View>
+          )}
+
+          {showCheckAnimation && (
+            <View style={styles.lottieContainer}>
+              <LottieView
+                source={checkMarkAnimation}
+                autoPlay
+                loop={false}
+                style={styles.lottieAnimation}
+              />
+            </View>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
