@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Game A",
+      "image": "https://media.gamestop.com/i/gamestop/20016376/Black-Myth-Wukong---PlayStation-5?h=300&w=240&sm=clamp",
+      "type": "video games",
+      "variations": ["Digital", "New", "Pre-Owned"],
+      "details": "Description of Game A.",
+      "price": 59.99
+    },
+    {
+      "id": "2",
+      "name": "Shirt B",
+      "image": "https://media.gamestop.com/i/gamestop/20012665/Geeknet-Marvel-Deadpool-Holiday-Sweater-GameStop-Exclusive?h=240&w=300&sm=clamp",
+      "type": "clothing",
+      "variations": ["Small", "Medium", "Large"],
+      "details": "Description of Shirt B.",
+      "price": 19.99
+    },
+    {
+      "id": "3",
+      "name": "Console C",
+      "image": "https://media.gamestop.com/i/gamestop/11108141/Sony-PlayStation-5-Digital-Edition-Console?$pdp2x$$&fmt=webp",
+      "type": "console",
+      "variations": ["New", "Pre-Owned", "Refurbished"],
+      "details": "Description of Console C.",
+      "price": 399.99
+    }
+  ]
+}
